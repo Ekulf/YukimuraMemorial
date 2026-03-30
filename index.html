@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>In Memory of Yukimura</title>
+    <style>
+      :root {
+        --bg-top: #f4efe7;
+        --bg-bottom: #d7c2ae;
+        --panel: rgba(255, 250, 244, 0.74);
+        --text: #2f231d;
+        --muted: #6d584b;
+        --accent: #8d5f46;
+        --line: rgba(84, 58, 44, 0.15);
+        --shadow: 0 24px 60px rgba(67, 43, 31, 0.15);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+          serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.65), transparent 36%),
+          linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+      }
+
+      main {
+        width: min(720px, 100%);
+      }
+
+      .card {
+        position: relative;
+        overflow: hidden;
+        padding: 56px 40px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .portrait-wrap {
+        margin-bottom: 28px;
+      }
+
+      .portrait {
+        display: block;
+        width: min(100%, 440px);
+        aspect-ratio: 4 / 5;
+        margin: 0 auto;
+        object-fit: cover;
+        border-radius: 22px;
+        border: 1px solid rgba(84, 58, 44, 0.14);
+        box-shadow: 0 18px 36px rgba(67, 43, 31, 0.16);
+      }
+
+      .card::before,
+      .card::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        background: rgba(141, 95, 70, 0.08);
+      }
+
+      .card::before {
+        width: 220px;
+        height: 220px;
+        top: -100px;
+        right: -70px;
+      }
+
+      .card::after {
+        width: 160px;
+        height: 160px;
+        bottom: -80px;
+        left: -40px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 0.98rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.8rem, 7vw, 4.6rem);
+        font-weight: 600;
+        line-height: 0.95;
+      }
+
+      .heading-group {
+        text-align: center;
+      }
+
+      .tribute {
+        margin: 20px auto 32px;
+        max-width: 34rem;
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .count-wrap {
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+      }
+
+      .count-message {
+        margin: 0;
+        font-size: clamp(1.18rem, 3vw, 1.7rem);
+        line-height: 1.7;
+        color: var(--muted);
+        text-align: center;
+        text-wrap: balance;
+      }
+
+      .count-value {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      @media (max-width: 640px) {
+        .card {
+          padding: 40px 24px;
+          border-radius: 24px;
+        }
+
+        .tribute {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card" aria-labelledby="title">
+        <div class="portrait-wrap">
+          <img
+            class="portrait"
+            src="yukimura.jpg"
+            alt="Yukimura"
+          />
+        </div>
+        <div class="heading-group">
+          <p class="eyebrow">In Loving Memory</p>
+          <h1 id="title">Yukimura</h1>
+        </div>
+        <p class="tribute">
+          Loved deeply, remembered always, and carried forward with quiet
+          gratitude each day.
+        </p>
+
+        <div class="count-wrap">
+          <p class="count-message" aria-live="polite">
+            It has been <span class="count-value" id="time-count">1 day</span>
+            since you went away, and not a day goes by that I don't think of
+            you.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const memorialStart = { year: 2026, monthIndex: 2, day: 28 };
+      const timeCountEl = document.getElementById("time-count");
+
+      function formatElapsedTime(totalDays, now) {
+        if (totalDays < 14) {
+          return totalDays === 1 ? "1 day" : `${totalDays} days`;
+        }
+
+        if (totalDays < 60) {
+          const weeks = Math.floor(totalDays / 7);
+          return weeks === 1 ? "1 week" : `${weeks} weeks`;
+        }
+
+        let months =
+          (now.getFullYear() - memorialStart.year) * 12 +
+          (now.getMonth() - memorialStart.monthIndex);
+
+        if (now.getDate() < memorialStart.day) {
+          months -= 1;
+        }
+
+        if (months < 1) {
+          return totalDays === 1 ? "1 day" : `${totalDays} days`;
+        }
+
+        return months === 1 ? "1 month" : `${months} months`;
+      }
+
+      function calculateInclusiveDayCount() {
+        const now = new Date();
+        const todayUtc = Date.UTC(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        const startUtc = Date.UTC(
+          memorialStart.year,
+          memorialStart.monthIndex,
+          memorialStart.day
+        );
+        const days = Math.floor((todayUtc - startUtc) / 86400000) + 1;
+
+        timeCountEl.textContent = formatElapsedTime(Math.max(days, 0), now);
+      }
+
+      calculateInclusiveDayCount();
+    </script>
+  </body>
+</html>
